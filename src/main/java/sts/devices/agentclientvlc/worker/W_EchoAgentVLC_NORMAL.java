@@ -85,15 +85,16 @@ public class W_EchoAgentVLC_NORMAL implements ConcreteStatus {
     }
 
     private void startLive(VLC_MSG msg) throws IOException {
-        VlcManager vlc = new ObjectMapper().readValue(msg.getPayload(), VlcManager.class);
+//        VlcManager vlc = new ObjectMapper().readValue(msg.getPayload(), VlcManager.class);
+        Vsmanager vs = new ObjectMapper().readValue(msg.getPayload(),Vsmanager.class);
 
-        String url = "rtsp://" + URLEncoder.encode(vlc.getUserName(), StandardCharsets.UTF_8)
-                + ":" + URLEncoder.encode(vlc.getPassword(), StandardCharsets.UTF_8)
-                + "@" + vlc.getIp() + ":" + vlc.getPort()
+        String url = "rtsp://" + URLEncoder.encode(vs.getUserName(), StandardCharsets.UTF_8)
+                + ":" + URLEncoder.encode(vs.getPassword(), StandardCharsets.UTF_8)
+                + "@" + vs.getIPaddress() + ":" + vs.getIPport()
                 + "/cam/realmonitor?channel=1&subtype=0";
 
-        echoWorker.getReaderVideo().startStream(vlc.getDescription(), url);
-        System.out.println("[CLIENT] avvio stream " + vlc.getIp());   // non stampare l'url: ha la password
+        echoWorker.getReaderVideo().startStream(vs.getDescription(), url);
+        System.out.println("[CLIENT] avvio stream " + vs.getIPaddress());
     }
 
     private void startPlbck(VLC_MSG msg)
