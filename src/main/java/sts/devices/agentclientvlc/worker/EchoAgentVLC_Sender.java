@@ -40,6 +40,7 @@ public class EchoAgentVLC_Sender extends FrameSender {
                         {
                             VLC_MSG vlcNopReq = new VLC_MSG(VLC_MSG.READ,0,0);
                             send(vlcNopReq.headerToByte(vlcNopReq));
+                            System.out.println("MANDO READ");
                         }
                     }
                 }

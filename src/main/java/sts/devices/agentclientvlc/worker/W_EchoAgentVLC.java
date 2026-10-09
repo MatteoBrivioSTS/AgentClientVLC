@@ -1,6 +1,7 @@
 package sts.devices.agentclientvlc.worker;
 
-import sts.devices.agentclientvlc.model.VlcManager;
+import sts.devices.agentclientvlc.model.MRC.VlcManager;
+import sts.devices.agentclientvlc.model.MRC.Vsmanager;
 import sts.devices.agentclientvlc.readervideo.ReaderVideo;
 import sts.drivers.worker.SS_EchoClient;
 import sts.drivers.worker.helper.Tuple;
@@ -32,6 +33,7 @@ public class W_EchoAgentVLC extends SS_EchoClient {
     private volatile long nop = System.currentTimeMillis();
 
     public ConcurrentHashMap<String, VlcManager> vlcs = new ConcurrentHashMap<>();
+    public ConcurrentHashMap<String, Vsmanager> vss = new ConcurrentHashMap<>();
 
     public W_EchoAgentVLC(String agentId, String host, int port) {
         super();
@@ -57,7 +59,7 @@ public class W_EchoAgentVLC extends SS_EchoClient {
 
     // CONNECTION
     public void openConnection() throws IOException {
-        disconnect();   // ferma reader/sender vecchi e chiude il socket, se esistono
+//        disconnect();   // ferma reader/sender vecchi e chiude il socket, se esistono
         Socket s = new Socket();
         try {
             s.connect(new InetSocketAddress(host, port), 5000);
@@ -144,4 +146,11 @@ public class W_EchoAgentVLC extends SS_EchoClient {
         return readerVideo;
     }
 
+    public ConcurrentHashMap<String, Vsmanager> getVss() {
+        return vss;
+    }
+
+    public void setVss(ConcurrentHashMap<String, Vsmanager> vss) {
+        this.vss = vss;
+    }
 }

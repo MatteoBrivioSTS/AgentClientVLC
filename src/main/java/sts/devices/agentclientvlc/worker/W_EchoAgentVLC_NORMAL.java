@@ -2,8 +2,10 @@ package sts.devices.agentclientvlc.worker;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import sts.devices.agentclientvlc.model.MRC.Vsmanager;
+import sts.devices.agentclientvlc.model.ReadPayload;
 import sts.devices.agentclientvlc.model.VLC_MSG;
-import sts.devices.agentclientvlc.model.VlcManager;
+import sts.devices.agentclientvlc.model.MRC.VlcManager;
 import sts.drivers.worker.helper.ConcreteStatus;
 import sts.drivers.worker.helper.Tuple;
 import sts.drivers.worker.helper.WorkerStatus;
@@ -39,23 +41,28 @@ public class W_EchoAgentVLC_NORMAL implements ConcreteStatus {
 
             if (packet!=null)
             {
-                switch (packet.getFirstValue())
-                {
-                    case VLC_MSG.NOP ->
-                    {
+                switch (packet.getFirstValue()) {
+                    case VLC_MSG.NOP -> {
                         echoWorker.setNop(now);
                     }
                     case VLC_MSG.READ ->
                     {
-                        VLC_MSG msg = (VLC_MSG) packet.getSecondValue();
-                        Map<String, VlcManager> vlcs = new ObjectMapper()
-                                .readValue(msg.getPayload(), new TypeReference<Map<String, VlcManager>>() {});
-                        if (vlcs!=null){echoWorker.getVlcs().putAll(vlcs);}
+
                     }
-                    case VLC_MSG.VIDEO_REQUEST_KEY ->
+                    case VLC_MSG.VIDEO_LIVE ->
                     {
-                        VLC_MSG msg = (VLC_MSG) packet.getSecondValue();
-                        startVideo(msg);
+                            VLC_MSG msg = (VLC_MSG) packet.getSecondValue();
+                            startLive(msg);
+                    }
+                    case VLC_MSG.VIDEO_PLBCK ->
+                    {
+                            VLC_MSG msg = (VLC_MSG) packet.getSecondValue();
+                            startPlbck(msg);
+                    }
+                    case VLC_MSG.VIDEO_ALRM ->
+                    {
+                            VLC_MSG msg = (VLC_MSG) packet.getSecondValue();
+                            startPopUpAlarm(msg);
                     }
                 }
             }
@@ -77,7 +84,7 @@ public class W_EchoAgentVLC_NORMAL implements ConcreteStatus {
         }
     }
 
-    private void startVideo(VLC_MSG msg) throws IOException {
+    private void startLive(VLC_MSG msg) throws IOException {
         VlcManager vlc = new ObjectMapper().readValue(msg.getPayload(), VlcManager.class);
 
         String url = "rtsp://" + URLEncoder.encode(vlc.getUserName(), StandardCharsets.UTF_8)
@@ -89,6 +96,21 @@ public class W_EchoAgentVLC_NORMAL implements ConcreteStatus {
         System.out.println("[CLIENT] avvio stream " + vlc.getIp());   // non stampare l'url: ha la password
     }
 
+    private void startPlbck(VLC_MSG msg)
+    {
+
+    }
+
+    private void startPopUpAlarm(VLC_MSG msg) throws IOException {
+        Vsmanager vs = new ObjectMapper().readValue(msg.getPayload(),Vsmanager.class);
+
+        String url = "rtsp://" + URLEncoder.encode(vs.getUserName(), StandardCharsets.UTF_8)
+                + ":" + URLEncoder.encode(vs.getPassword(), StandardCharsets.UTF_8)
+                + "@" + vs.getIPaddress() + ":" + vs.getIPport()
+                + "/cam/realmonitor?channel="+vs.getId_videostream()+"&subtype=0";
+        echoWorker.getReaderVideo().startStream(vs.getDescription(), url);
+        System.out.println("[CLIENT] avvio stream " + vs.getIPaddress());
+    }
 
     public WorkerStatus getWs() { return ws; }
     public void setWs(WorkerStatus ws) { this.ws = ws; }

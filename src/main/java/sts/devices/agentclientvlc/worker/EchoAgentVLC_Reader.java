@@ -39,18 +39,35 @@ public class EchoAgentVLC_Reader extends FrameReader {
                                     add(new Tuple<>(VLC_MSG.NOP,new Object()));
                             System.out.println("NOP REQ ACK");
                         }
-                        case VLC_MSG.READ ->
+                        case VLC_MSG.READ_PL ->
                         {
                             VLC_MSG vlcMsg = getPayload(vlcHeader);
                             getPriorityTank().getPriorityPacketTank().get(W_EchoAgentVLC.MAX_PRIO).
-                                    add(new Tuple<>(VLC_MSG.READ,vlcMsg));
+                                    add(new Tuple<>(VLC_MSG.READ_PL,vlcMsg));
                         }
-                        case VLC_MSG.VIDEO_REQUEST_KEY ->
+                        case VLC_MSG.VIDEO_LIVE ->
                         {
                             VLC_MSG vlcMsg = getPayload(vlcHeader);
                             getPriorityTank().getPriorityPacketTank().get(W_EchoAgentVLC.MAX_PRIO).
-                                    add(new Tuple<>(VLC_MSG.VIDEO_REQUEST_KEY,vlcMsg));
+                                    add(new Tuple<>(VLC_MSG.VIDEO_LIVE,vlcMsg));
                             System.out.println(vlcMsg);
+                        }
+                        case VLC_MSG.VIDEO_PLBCK ->
+                        {
+                            VLC_MSG vlcMsg = getPayload(vlcHeader);
+                            getPriorityTank().getPriorityPacketTank().get(W_EchoAgentVLC.MAX_PRIO).
+                                    add(new Tuple<>(VLC_MSG.VIDEO_PLBCK,vlcMsg));
+                            System.out.println(vlcMsg);
+                        }
+                        case VLC_MSG.VIDEO_ALRM ->
+                        {
+                            VLC_MSG vlcMsg = getPayload(vlcHeader);
+                            getPriorityTank().getPriorityPacketTank().get(W_EchoAgentVLC.MAX_PRIO).
+                                    add(new Tuple<>(VLC_MSG.VIDEO_ALRM,vlcMsg));
+                            System.out.println(vlcMsg);
+                        }
+                        default -> {
+                            System.out.println(vlcHeader);
                         }
                     }
                 }

@@ -1,5 +1,7 @@
 package sts.devices.agentclientvlc.worker;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import sts.devices.agentclientvlc.model.ReadPayload;
 import sts.devices.agentclientvlc.model.VLC_MSG;
 import sts.drivers.worker.helper.ConcreteStatus;
 import sts.drivers.worker.helper.Tuple;
@@ -19,6 +21,7 @@ public class W_EchoAgentVLC_UPLOAD implements ConcreteStatus {
     public void business(WorkerStatus workerStatus) {
         if (ws == null)
         {
+            System.out.println("upload");
             setWs(workerStatus);
         }
         if (echoWorker == null)
@@ -50,19 +53,17 @@ public class W_EchoAgentVLC_UPLOAD implements ConcreteStatus {
                             {
                                 getEchoWorker().setNop(now);
                             }
-                            case VLC_MSG.READ ->
+                            case VLC_MSG.READ_PL ->
                             {
+                                handleReadPayload((VLC_MSG) packet.getSecondValue());
                                 getEchoWorker().setNop(now);
                                 getEchoWorker().goToNormal();
-
-                                getEchoWorker().getFrameReader().getPriorityTank().
-                                        putPacket(W_EchoAgentVLC.MAX_PRIO,new Tuple<>(VLC_MSG.READ,packet.getSecondValue()));
                             }
-                            default ->
-                            {
-                                getEchoWorker().getFrameReader().getPriorityTank().
-                                        putPacket(W_EchoAgentVLC.MAX_PRIO,new Tuple<>(packet.getFirstValue(),packet.getSecondValue()));
-                            }
+//                            default ->
+//                            {
+//                                getEchoWorker().getFrameReader().getPriorityTank().
+//                                        putPacket(W_EchoAgentVLC.MAX_PRIO,new Tuple<>(packet.getFirstValue(),packet.getSecondValue()));
+//                            }
                         }
                     }
                 }
@@ -72,6 +73,14 @@ public class W_EchoAgentVLC_UPLOAD implements ConcreteStatus {
         {
             e.printStackTrace();
         }
+    }
+
+    private void handleReadPayload(VLC_MSG msg) throws IOException {
+
+        ReadPayload readPayload = new ObjectMapper().readValue(msg.getPayload(), ReadPayload.class);
+        if (readPayload.getVls() != null) {echoWorker.getVlcs().putAll(readPayload.getVls());}
+        if (readPayload.getVss() != null) {echoWorker.getVss().putAll(readPayload.getVss());}
+
     }
 
     public WorkerStatus getWs() {

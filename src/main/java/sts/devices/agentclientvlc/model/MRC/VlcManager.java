@@ -1,4 +1,4 @@
-package sts.devices.agentclientvlc.model;
+package sts.devices.agentclientvlc.model.MRC;
 
 public class VlcManager {
     private String pdn;
