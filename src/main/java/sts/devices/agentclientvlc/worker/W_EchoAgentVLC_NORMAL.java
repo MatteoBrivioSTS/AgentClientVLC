@@ -84,49 +84,52 @@ public class W_EchoAgentVLC_NORMAL implements ConcreteStatus {
     }
 
     private void startLive(VLC_MSG msg) throws IOException {
-//        VlcManager vlc = new ObjectMapper().readValue(msg.getPayload(), VlcManager.class);
         Vsmanager vs = new ObjectMapper().readValue(msg.getPayload(),Vsmanager.class);
+        if (vs!=null)
+        {
+            String url = "rtsp://" + URLEncoder.encode(vs.getUserName(), StandardCharsets.UTF_8)
+                    + ":" + URLEncoder.encode(vs.getPassword(), StandardCharsets.UTF_8)
+                    + "@" + vs.getIPaddress() + ":" + vs.getIPport()
+                    + "/cam/realmonitor?channel=1&subtype=0";
 
-        String url = "rtsp://" + URLEncoder.encode(vs.getUserName(), StandardCharsets.UTF_8)
-                + ":" + URLEncoder.encode(vs.getPassword(), StandardCharsets.UTF_8)
-                + "@" + vs.getIPaddress() + ":" + vs.getIPport()
-                + "/cam/realmonitor?channel=1&subtype=0";
-
-//        echoWorker.getReaderVideo().startStream(vs.getDescription(), url);
-        System.out.println("[CLIENT] avvio stream " + vs.getIPaddress());
-        MultiReaderVideo popup = new MultiReaderVideo();
-        popup.startStream(vs.getDescription(),url,30);
+            System.out.println("[CLIENT] avvio stream " + vs.getIPaddress());
+            MultiReaderVideo popup = new MultiReaderVideo();
+            popup.startStream(vs.getDescription(),url,Integer.parseInt(vs.getPopUpTiming()));
+        }
     }
 
     private void startPlbck(VLC_MSG msg) throws IOException {
         Vsmanager vs = new ObjectMapper().readValue(msg.getPayload(),Vsmanager.class);
-        LocalDateTime start = LocalDateTime.parse(vs.getDate()).minusSeconds(Long.parseLong(vs.getPlayback()));
-        LocalDateTime end = LocalDateTime.parse(vs.getDate()).plusSeconds(Long.parseLong(vs.getPlayback()));
-        DateTimeFormatter dtf= DateTimeFormatter.ofPattern("yyyy_MM_dd_HH_mm_ss");
-        String startTime = start.format(dtf);
-        String endTime = end.format(dtf);
+        if (vs!=null)
+        {
+            LocalDateTime start = LocalDateTime.parse(vs.getDate()).minusSeconds(Long.parseLong(vs.getPlayback()));
+            LocalDateTime end = LocalDateTime.parse(vs.getDate()).plusSeconds(Long.parseLong(vs.getPlayback()));
+            DateTimeFormatter dtf= DateTimeFormatter.ofPattern("yyyy_MM_dd_HH_mm_ss");
+            String startTime = start.format(dtf);
+            String endTime = end.format(dtf);
 
-        String url = "rtsp://" + vs.getUserName() + ":" + vs.getPassword() + "@" + vs.getIPaddress() + ":" + vs.getIPport()
-                + "/cam/playback?channel="+vs.getId_videostream()+"&subtype=0"+"&starttime="+startTime+"&endtime="+endTime;
+            String url = "rtsp://" + vs.getUserName() + ":" + vs.getPassword() + "@" + vs.getIPaddress() + ":" + vs.getIPport()
+                    + "/cam/playback?channel="+vs.getId_videostream()+"&subtype=0"+"&starttime="+startTime+"&endtime="+endTime;
 
-//        echoWorker.getReaderVideo().startStream(vs.getDescription(), url);
-        System.out.println("[CLIENT] avvio stream " + vs.getIPaddress()+" url: "+url);
-        MultiReaderVideo popup = new MultiReaderVideo();
-        popup.startStream(vs.getDescription(),url,30);
+            System.out.println("[CLIENT] avvio stream " + vs.getIPaddress()+" url: "+url);
+            MultiReaderVideo popup = new MultiReaderVideo();
+            popup.startStream(vs.getDescription(),url,Integer.parseInt(vs.getPopUpTiming()));
+        }
     }
 
     private void startPopUpAlarm(VLC_MSG msg) throws IOException {
         Vsmanager vs = new ObjectMapper().readValue(msg.getPayload(),Vsmanager.class);
+        if (vs!=null)
+        {
+            String url = "rtsp://" + URLEncoder.encode(vs.getUserName(), StandardCharsets.UTF_8)
+                    + ":" + URLEncoder.encode(vs.getPassword(), StandardCharsets.UTF_8)
+                    + "@" + vs.getIPaddress() + ":" + vs.getIPport()
+                    + "/cam/realmonitor?channel="+vs.getId_videostream()+"&subtype=0";
 
-        String url = "rtsp://" + URLEncoder.encode(vs.getUserName(), StandardCharsets.UTF_8)
-                + ":" + URLEncoder.encode(vs.getPassword(), StandardCharsets.UTF_8)
-                + "@" + vs.getIPaddress() + ":" + vs.getIPport()
-                + "/cam/realmonitor?channel="+vs.getId_videostream()+"&subtype=0";
-
-//        echoWorker.getReaderVideo().startStream(vs.getDescription(), url);
-        System.out.println("[CLIENT] avvio stream " + vs.getIPaddress());
-        MultiReaderVideo popup = new MultiReaderVideo();
-        popup.startStream(vs.getDescription(),url,30);
+            System.out.println("[CLIENT] avvio stream " + vs.getIPaddress());
+            MultiReaderVideo popup = new MultiReaderVideo();
+            popup.startStream(vs.getDescription(),url,Integer.parseInt(vs.getPopUpTiming()));
+        }
     }
 
     public WorkerStatus getWs() { return ws; }
@@ -134,4 +137,3 @@ public class W_EchoAgentVLC_NORMAL implements ConcreteStatus {
     public W_EchoAgentVLC getEchoWorker() {return echoWorker;}
     public void setEchoWorker(W_EchoAgentVLC echoWorker) {this.echoWorker = echoWorker;}
 }
-//secondlife

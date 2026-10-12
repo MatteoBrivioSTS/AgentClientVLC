@@ -131,7 +131,6 @@ public class W_EchoAgentVLC extends SS_EchoClient {
         this.vlcs = vlcs;
     }
 
-
     public ConcurrentHashMap<String, Vsmanager> getVss() {
         return vss;
     }

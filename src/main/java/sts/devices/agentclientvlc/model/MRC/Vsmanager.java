@@ -10,12 +10,13 @@ public class Vsmanager {
     private String parameters;
     private String description;
 
-
     private String id_videostream;
 
     private String date;
 
     private String playback;
+
+    private String popUpTiming;
 
     //Constructor
     public Vsmanager() {}
@@ -46,12 +47,26 @@ public class Vsmanager {
         this.id_videostream = id_videostream;
     }
 
-    //Constructor for client with playback time
-
-
+    //added popuptiming
     public Vsmanager(String pdn, String type, String IPaddress, String IPport,
-                     String userName, String password, String parameters, String description,
-                     String id_videostream, String date, String playback) {
+                     String userName, String password, String parameters,
+                     String description, String id_videostream, String popUpTiming) {
+        this.pdn = pdn;
+        this.type = type;
+        this.IPaddress = IPaddress;
+        this.IPport = IPport;
+        this.userName = userName;
+        this.password = password;
+        this.parameters = parameters;
+        this.description = description;
+        this.id_videostream = id_videostream;
+        this.popUpTiming = popUpTiming;
+    }
+
+    //Constructor for client with playback time
+    public Vsmanager(String pdn, String type, String IPaddress, String IPport,
+                     String userName, String password, String parameters,
+                     String description, String id_videostream, String date, String playback) {
         this.pdn = pdn;
         this.type = type;
         this.IPaddress = IPaddress;
@@ -63,6 +78,24 @@ public class Vsmanager {
         this.id_videostream = id_videostream;
         this.date = date;
         this.playback = playback;
+    }
+
+    //added popuptiming
+    public Vsmanager(String pdn, String type, String IPaddress, String IPport, String userName,
+                     String password, String parameters, String description, String id_videostream,
+                     String date, String playback, String popUpTiming) {
+        this.pdn = pdn;
+        this.type = type;
+        this.IPaddress = IPaddress;
+        this.IPport = IPport;
+        this.userName = userName;
+        this.password = password;
+        this.parameters = parameters;
+        this.description = description;
+        this.id_videostream = id_videostream;
+        this.date = date;
+        this.playback = playback;
+        this.popUpTiming = popUpTiming;
     }
 
     //Getter and Setter
@@ -154,7 +187,16 @@ public class Vsmanager {
         this.playback = playback;
     }
 
+    public String getPopUpTiming() {
+        return popUpTiming;
+    }
+
+    public void setPopUpTiming(String popUpTiming) {
+        this.popUpTiming = popUpTiming;
+    }
+
     //toString()
+
     @Override
     public String toString() {
         return "Vsmanager{" +
@@ -169,6 +211,7 @@ public class Vsmanager {
                 ", id_videostream='" + id_videostream + '\'' +
                 ", date='" + date + '\'' +
                 ", playback='" + playback + '\'' +
+                ", popUpTiming='" + popUpTiming + '\'' +
                 '}';
     }
 }
