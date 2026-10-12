@@ -10,7 +10,12 @@ public class Vsmanager {
     private String parameters;
     private String description;
 
+
     private String id_videostream;
+
+    private String date;
+
+    private String playback;
 
     //Constructor
     public Vsmanager() {}
@@ -39,6 +44,25 @@ public class Vsmanager {
         this.parameters = parameters;
         this.description = description;
         this.id_videostream = id_videostream;
+    }
+
+    //Constructor for client with playback time
+
+
+    public Vsmanager(String pdn, String type, String IPaddress, String IPport,
+                     String userName, String password, String parameters, String description,
+                     String id_videostream, String date, String playback) {
+        this.pdn = pdn;
+        this.type = type;
+        this.IPaddress = IPaddress;
+        this.IPport = IPport;
+        this.userName = userName;
+        this.password = password;
+        this.parameters = parameters;
+        this.description = description;
+        this.id_videostream = id_videostream;
+        this.date = date;
+        this.playback = playback;
     }
 
     //Getter and Setter
@@ -114,8 +138,23 @@ public class Vsmanager {
         this.id_videostream = id_videostream;
     }
 
-    //toString()
+    public String getDate() {
+        return date;
+    }
 
+    public void setDate(String date) {
+        this.date = date;
+    }
+
+    public String getPlayback() {
+        return playback;
+    }
+
+    public void setPlayback(String playback) {
+        this.playback = playback;
+    }
+
+    //toString()
     @Override
     public String toString() {
         return "Vsmanager{" +
@@ -128,6 +167,8 @@ public class Vsmanager {
                 ", parameters='" + parameters + '\'' +
                 ", description='" + description + '\'' +
                 ", id_videostream='" + id_videostream + '\'' +
+                ", date='" + date + '\'' +
+                ", playback='" + playback + '\'' +
                 '}';
     }
 }

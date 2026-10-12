@@ -13,6 +13,8 @@ import sts.drivers.worker.helper.WorkerStatus;
 import java.io.IOException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Map;
 
 public class W_EchoAgentVLC_NORMAL implements ConcreteStatus {
@@ -97,8 +99,19 @@ public class W_EchoAgentVLC_NORMAL implements ConcreteStatus {
         System.out.println("[CLIENT] avvio stream " + vs.getIPaddress());
     }
 
-    private void startPlbck(VLC_MSG msg)
-    {
+    private void startPlbck(VLC_MSG msg) throws IOException {
+        Vsmanager vs = new ObjectMapper().readValue(msg.getPayload(),Vsmanager.class);
+        LocalDateTime start = LocalDateTime.parse(vs.getDate()).minusSeconds(Long.parseLong(vs.getPlayback()));
+        LocalDateTime end = LocalDateTime.parse(vs.getDate()).plusSeconds(Long.parseLong(vs.getPlayback()));
+        DateTimeFormatter dtf= DateTimeFormatter.ofPattern("yyyy_MM_dd_HH_mm_ss");
+        String startTime = start.format(dtf);
+        String endTime = end.format(dtf);
+
+        String url = "rtsp://" + vs.getUserName() + ":" + vs.getPassword() + "@" + vs.getIPaddress() + ":" + vs.getIPport()
+                + "/cam/playback?channel="+vs.getId_videostream()+"&subtype=0"+"&starttime="+startTime+"&endtime="+endTime;
+
+        echoWorker.getReaderVideo().startStream(vs.getDescription(), url);
+        System.out.println("[CLIENT] avvio stream " + vs.getIPaddress()+" url: "+url);
 
     }
 
@@ -109,6 +122,7 @@ public class W_EchoAgentVLC_NORMAL implements ConcreteStatus {
                 + ":" + URLEncoder.encode(vs.getPassword(), StandardCharsets.UTF_8)
                 + "@" + vs.getIPaddress() + ":" + vs.getIPport()
                 + "/cam/realmonitor?channel="+vs.getId_videostream()+"&subtype=0";
+
         echoWorker.getReaderVideo().startStream(vs.getDescription(), url);
         System.out.println("[CLIENT] avvio stream " + vs.getIPaddress());
     }
