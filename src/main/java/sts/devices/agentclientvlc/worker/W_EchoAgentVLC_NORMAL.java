@@ -1,11 +1,9 @@
 package sts.devices.agentclientvlc.worker;
 
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import sts.devices.agentclientvlc.model.MRC.Vsmanager;
-import sts.devices.agentclientvlc.model.ReadPayload;
 import sts.devices.agentclientvlc.model.VLC_MSG;
-import sts.devices.agentclientvlc.model.MRC.VlcManager;
+import sts.devices.agentclientvlc.readervideo.MultiReaderVideo;
 import sts.drivers.worker.helper.ConcreteStatus;
 import sts.drivers.worker.helper.Tuple;
 import sts.drivers.worker.helper.WorkerStatus;
@@ -15,7 +13,6 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Map;
 
 public class W_EchoAgentVLC_NORMAL implements ConcreteStatus {
 
@@ -95,8 +92,10 @@ public class W_EchoAgentVLC_NORMAL implements ConcreteStatus {
                 + "@" + vs.getIPaddress() + ":" + vs.getIPport()
                 + "/cam/realmonitor?channel=1&subtype=0";
 
-        echoWorker.getReaderVideo().startStream(vs.getDescription(), url);
+//        echoWorker.getReaderVideo().startStream(vs.getDescription(), url);
         System.out.println("[CLIENT] avvio stream " + vs.getIPaddress());
+        MultiReaderVideo popup = new MultiReaderVideo();
+        popup.startStream(vs.getDescription(),url,30);
     }
 
     private void startPlbck(VLC_MSG msg) throws IOException {
@@ -110,9 +109,10 @@ public class W_EchoAgentVLC_NORMAL implements ConcreteStatus {
         String url = "rtsp://" + vs.getUserName() + ":" + vs.getPassword() + "@" + vs.getIPaddress() + ":" + vs.getIPport()
                 + "/cam/playback?channel="+vs.getId_videostream()+"&subtype=0"+"&starttime="+startTime+"&endtime="+endTime;
 
-        echoWorker.getReaderVideo().startStream(vs.getDescription(), url);
+//        echoWorker.getReaderVideo().startStream(vs.getDescription(), url);
         System.out.println("[CLIENT] avvio stream " + vs.getIPaddress()+" url: "+url);
-
+        MultiReaderVideo popup = new MultiReaderVideo();
+        popup.startStream(vs.getDescription(),url,30);
     }
 
     private void startPopUpAlarm(VLC_MSG msg) throws IOException {
@@ -123,8 +123,10 @@ public class W_EchoAgentVLC_NORMAL implements ConcreteStatus {
                 + "@" + vs.getIPaddress() + ":" + vs.getIPport()
                 + "/cam/realmonitor?channel="+vs.getId_videostream()+"&subtype=0";
 
-        echoWorker.getReaderVideo().startStream(vs.getDescription(), url);
+//        echoWorker.getReaderVideo().startStream(vs.getDescription(), url);
         System.out.println("[CLIENT] avvio stream " + vs.getIPaddress());
+        MultiReaderVideo popup = new MultiReaderVideo();
+        popup.startStream(vs.getDescription(),url,30);
     }
 
     public WorkerStatus getWs() { return ws; }

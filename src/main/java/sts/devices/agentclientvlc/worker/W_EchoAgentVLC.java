@@ -2,7 +2,6 @@ package sts.devices.agentclientvlc.worker;
 
 import sts.devices.agentclientvlc.model.MRC.VlcManager;
 import sts.devices.agentclientvlc.model.MRC.Vsmanager;
-import sts.devices.agentclientvlc.readervideo.ReaderVideo;
 import sts.drivers.worker.SS_EchoClient;
 import sts.drivers.worker.helper.Tuple;
 import sts.drivers.worker.helper.WorkerStatus;
@@ -16,7 +15,6 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class W_EchoAgentVLC extends SS_EchoClient {
 
-    private ReaderVideo readerVideo;
     private final String host;
     private final int port;
     private final String agentId;
@@ -113,12 +111,6 @@ public class W_EchoAgentVLC extends SS_EchoClient {
         getWs().setEchoWorker(this);
     }
 
-    public void shutdown()
-    {
-        running = false;
-        if (readerVideo!=null)readerVideo.release();
-    }
-
     public WorkerStatus getWs() { return ws; }
     public void setWs(WorkerStatus ws) { this.ws = ws; }
     public String getAgentId() { return agentId; }
@@ -139,12 +131,6 @@ public class W_EchoAgentVLC extends SS_EchoClient {
         this.vlcs = vlcs;
     }
 
-    public synchronized ReaderVideo getReaderVideo()
-    {
-        if (readerVideo==null)
-            readerVideo = new ReaderVideo();
-        return readerVideo;
-    }
 
     public ConcurrentHashMap<String, Vsmanager> getVss() {
         return vss;
