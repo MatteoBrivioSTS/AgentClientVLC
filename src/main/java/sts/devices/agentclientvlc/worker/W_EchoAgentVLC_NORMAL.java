@@ -87,7 +87,7 @@ public class W_EchoAgentVLC_NORMAL implements ConcreteStatus {
             String url = "rtsp://" + URLEncoder.encode(vs.getUserName(), StandardCharsets.UTF_8)
                     + ":" + URLEncoder.encode(vs.getPassword(), StandardCharsets.UTF_8)
                     + "@" + vs.getIPaddress() + ":" + vs.getIPport()
-                    + "/cam/realmonitor?channel=1&subtype=0";
+                    + "/cam/realmonitor?channel="+vs.getId_videostream()+"&subtype=0";
 
             System.out.println("[CLIENT] avvio stream " + vs.getIPaddress());
             echoWorker.getMultiReaderVideo().startStream(vs.getPdn(),vs.getDescription(),url,Integer.parseInt(vs.getPopUpTiming()));
