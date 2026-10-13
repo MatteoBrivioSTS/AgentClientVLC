@@ -1,6 +1,5 @@
 package sts.devices.agentclientvlc.worker;
 
-import sts.devices.agentclientvlc.model.MRC.VlcManager;
 import sts.devices.agentclientvlc.model.MRC.Vsmanager;
 import sts.drivers.worker.SS_EchoClient;
 import sts.drivers.worker.helper.Tuple;
@@ -30,7 +29,6 @@ public class W_EchoAgentVLC extends SS_EchoClient {
 
     private volatile long nop = System.currentTimeMillis();
 
-    public ConcurrentHashMap<String, VlcManager> vlcs = new ConcurrentHashMap<>();
     public ConcurrentHashMap<String, Vsmanager> vss = new ConcurrentHashMap<>();
 
     public W_EchoAgentVLC(String agentId, String host, int port) {
@@ -121,14 +119,6 @@ public class W_EchoAgentVLC extends SS_EchoClient {
 
     public void setNop(long nop) {
         this.nop = nop;
-    }
-
-    public ConcurrentHashMap<String, VlcManager> getVlcs() {
-        return vlcs;
-    }
-
-    public void setVlcs(ConcurrentHashMap<String, VlcManager> vlcs) {
-        this.vlcs = vlcs;
     }
 
     public ConcurrentHashMap<String, Vsmanager> getVss() {

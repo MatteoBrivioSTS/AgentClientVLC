@@ -80,7 +80,6 @@ public class W_EchoAgentVLC_UPLOAD implements ConcreteStatus {
     private void handleReadPayload(VLC_MSG msg) throws IOException {
 
         ReadPayload readPayload = new ObjectMapper().readValue(msg.getPayload(), ReadPayload.class);
-        if (readPayload.getVls() != null) {echoWorker.getVlcs().putAll(readPayload.getVls());}
         if (readPayload.getVss() != null) {echoWorker.getVss().putAll(readPayload.getVss());}
 
     }
