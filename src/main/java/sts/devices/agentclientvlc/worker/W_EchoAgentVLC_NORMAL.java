@@ -1,9 +1,9 @@
 package sts.devices.agentclientvlc.worker;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import sts.devices.agentclientvlc.helper.AgentLog;
 import sts.devices.agentclientvlc.model.MRC.Vsmanager;
 import sts.devices.agentclientvlc.model.VLC_MSG;
-import sts.devices.agentclientvlc.readervideo.MultiReaderVideo;
 import sts.drivers.worker.helper.ConcreteStatus;
 import sts.drivers.worker.helper.Tuple;
 import sts.drivers.worker.helper.WorkerStatus;
@@ -32,22 +32,31 @@ public class W_EchoAgentVLC_NORMAL implements ConcreteStatus {
         {
             setEchoWorker((W_EchoAgentVLC) getWs().getEchoWorker());
         }
+        long now = System.currentTimeMillis();
         try
         {
-            long now = System.currentTimeMillis();
             EchoAgentVLC_Reader reader = (EchoAgentVLC_Reader) getEchoWorker().getFrameReader();
+            if(reader.isClosed()||now-echoWorker.getNop()>W_EchoAgentVLC.NOP_TIMEOUT)
+            {
+                System.out.println("NORMAL CONNESIONE PERSA");
+                echoWorker.disconnect();
+                echoWorker.goToInit();
+                return;
+            }
+
+            if (now-lastNopSent> W_EchoAgentVLC.NOP_GAP)
+            {
+                getEchoWorker().getFrameSender().getPriorityDelayedTank().getPriorityPacketTank()
+                        .get(W_EchoAgentVLC.MAX_PRIO).add(new Tuple<>(VLC_MSG.NOP,new Object()));
+                lastNopSent = now;
+            }
+
             Tuple<Integer,Object> packet = reader.getPriorityTank().getPacket();
 
             if (packet!=null)
             {
+                echoWorker.setNop(now);
                 switch (packet.getFirstValue()) {
-                    case VLC_MSG.NOP -> {
-                        echoWorker.setNop(now);
-                    }
-                    case VLC_MSG.READ ->
-                    {
-
-                    }
                     case VLC_MSG.VIDEO_LIVE ->
                     {
                             VLC_MSG msg = (VLC_MSG) packet.getSecondValue();
@@ -63,23 +72,11 @@ public class W_EchoAgentVLC_NORMAL implements ConcreteStatus {
                             VLC_MSG msg = (VLC_MSG) packet.getSecondValue();
                             startPopUpAlarm(msg);
                     }
+                    default -> AgentLog.log("Normal comando ignorato: "+packet.getFirstValue());
                 }
             }
-            if (now-lastNopSent> W_EchoAgentVLC.HELLO_GAP)
-            {
-                getEchoWorker().getFrameSender().getPriorityDelayedTank().getPriorityPacketTank()
-                        .get(W_EchoAgentVLC.MAX_PRIO).add(new Tuple<>(VLC_MSG.NOP,new Object()));
-                lastNopSent = now;
-            }
-            if (now - echoWorker.getNop() > W_EchoAgentVLC.HELLO_TIMEOUT)
-            {
-                System.err.println("[NORMAL] nessuna risposta dal server, torno in INIT");
-                echoWorker.disconnect();
-                echoWorker.getWs().setStatus(new W_EchoAgentVLC_INIT());
-                echoWorker.getWs().setEchoWorker(echoWorker);
-            }
         } catch (Exception e) {
-            e.printStackTrace();
+            AgentLog.log("NORMAL errore: " + e);
         }
     }
 
@@ -93,8 +90,7 @@ public class W_EchoAgentVLC_NORMAL implements ConcreteStatus {
                     + "/cam/realmonitor?channel=1&subtype=0";
 
             System.out.println("[CLIENT] avvio stream " + vs.getIPaddress());
-            MultiReaderVideo popup = new MultiReaderVideo();
-            popup.startStream(vs.getDescription(),url,Integer.parseInt(vs.getPopUpTiming()));
+            echoWorker.getMultiReaderVideo().startStream(vs.getPdn(),vs.getDescription(),url,Integer.parseInt(vs.getPopUpTiming()));
         }
     }
 
@@ -112,8 +108,7 @@ public class W_EchoAgentVLC_NORMAL implements ConcreteStatus {
                     + "/cam/playback?channel="+vs.getId_videostream()+"&subtype=0"+"&starttime="+startTime+"&endtime="+endTime;
 
             System.out.println("[CLIENT] avvio stream " + vs.getIPaddress()+" url: "+url);
-            MultiReaderVideo popup = new MultiReaderVideo();
-            popup.startStream(vs.getDescription(),url,Integer.parseInt(vs.getPopUpTiming()));
+            echoWorker.getMultiReaderVideo().startStream(vs.getPdn(),vs.getDescription(),url,Integer.parseInt(vs.getPopUpTiming()));
         }
     }
 
@@ -127,8 +122,7 @@ public class W_EchoAgentVLC_NORMAL implements ConcreteStatus {
                     + "/cam/realmonitor?channel="+vs.getId_videostream()+"&subtype=0";
 
             System.out.println("[CLIENT] avvio stream " + vs.getIPaddress());
-            MultiReaderVideo popup = new MultiReaderVideo();
-            popup.startStream(vs.getDescription(),url,Integer.parseInt(vs.getPopUpTiming()));
+            echoWorker.getMultiReaderVideo().startStream(vs.getPdn(),vs.getDescription(),url,Integer.parseInt(vs.getPopUpTiming()));
         }
     }
 

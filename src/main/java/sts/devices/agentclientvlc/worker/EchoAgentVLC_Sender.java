@@ -44,12 +44,9 @@ public class EchoAgentVLC_Sender extends FrameSender {
                         }
                     }
                 }
+                Thread.sleep(5);
             }
-        } catch (InterruptedException e) {
-            if (running) System.err.println("[Sender] scrittura fallita: " + e.getMessage());
-            running = false;   // il sender si ferma, la connessione è comunque finita
-            throw new RuntimeException(e);
-        }
+        } catch (InterruptedException ignored) {}
     }
 
     @Override
