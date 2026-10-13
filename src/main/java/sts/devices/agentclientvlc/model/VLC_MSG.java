@@ -15,7 +15,6 @@ public class VLC_MSG {
     public final static int HELLO = 1;
     public final static int NOP = 0;
     public final static int READ = 2;
-    public final static int READ_PL = 3;
     public static final int VIDEO_LIVE = 5;
     public static final int VIDEO_PLBCK = 6;
     public static final int VIDEO_ALRM  = 7;

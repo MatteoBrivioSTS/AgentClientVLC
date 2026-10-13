@@ -39,11 +39,12 @@ public class EchoAgentVLC_Reader extends FrameReader {
                                     add(new Tuple<>(VLC_MSG.NOP,new Object()));
                             System.out.println("NOP REQ ACK");
                         }
-                        case VLC_MSG.READ_PL ->
+                        case VLC_MSG.READ ->
                         {
+                            System.out.println("RICEVO RISPOSTA READ");
                             VLC_MSG vlcMsg = getPayload(vlcHeader);
                             getPriorityTank().getPriorityPacketTank().get(W_EchoAgentVLC.MAX_PRIO).
-                                    add(new Tuple<>(VLC_MSG.READ_PL,vlcMsg));
+                                    add(new Tuple<>(VLC_MSG.READ,vlcMsg));
                         }
                         case VLC_MSG.VIDEO_LIVE ->
                         {

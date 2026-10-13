@@ -35,7 +35,7 @@ public class W_EchoAgentVLC_UPLOAD implements ConcreteStatus {
             {
                 case 0 ->
                 {
-
+                    System.out.println("ACCODO READ IN SENDER");
                     getEchoWorker().getFrameSender().getPriorityDelayedTank().getPriorityPacketTank()
                                 .get(W_EchoAgentVLC.MAX_PRIO).add(new Tuple<>(VLC_MSG.READ,new Object()));
                         echoWorker.setNop(now);
@@ -53,11 +53,13 @@ public class W_EchoAgentVLC_UPLOAD implements ConcreteStatus {
                             {
                                 getEchoWorker().setNop(now);
                             }
-                            case VLC_MSG.READ_PL ->
+                            case VLC_MSG.READ ->
                             {
+                                System.out.println("READ UPLOAD GESTITA");
                                 handleReadPayload((VLC_MSG) packet.getSecondValue());
                                 getEchoWorker().setNop(now);
                                 getEchoWorker().goToNormal();
+                                System.out.println("GO TO NORMAL???");
                             }
 //                            default ->
 //                            {
